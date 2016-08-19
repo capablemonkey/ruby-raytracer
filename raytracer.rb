@@ -29,6 +29,62 @@ class Image
     end
 end
 
+class Vec3
+  def initialize(x, y, z)
+    @x = x
+    @y = y
+    @z = z
+  end
+
+  attr_reader :x, :y, :z
+
+  def *(other)
+    if other.respond_to?(:x)
+      Vec3.new(@x * other.x, @y * other.y, @z * other.z)
+    else
+      Vec3.new(@x * other, @y * other, @z * other)
+    end
+  end
+
+  def dot_product(other)
+    @x * other.x + @y * other.y + @z * other.z
+  end
+
+  def +(other)
+    Vec3.new(@x + other.x, @y + other.y, @z + other.z)
+  end
+
+  def -(other)
+    Vec3.new(@x - other.x, @y - other.y, @z - other.z)
+  end
+
+  def increment_by(other)
+    @x += other.x
+    @y += other.y
+    @z += other.z
+    self
+  end
+
+  def decrement_by(other)
+    @x -= other.x
+    @y -= other.y
+    @z -= other.z
+    self
+  end
+
+  def length_squared
+    @x ** 2 + @y ** 2 + @z ** 2
+  end
+
+  def length
+    Math.sqrt(length_squared)
+  end
+
+  def inspect
+    "[#{@x}, #{@y}, #{@z}]"
+  end
+end
+
 def test_image
   image = Image.new('out.ppm', 255, 255)
 
