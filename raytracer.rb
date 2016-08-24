@@ -97,13 +97,13 @@ class Vec3
 end
 
 class Sphere
-  def initialize(center, radius, surface_color, reflection = 0, transparency = 0, emission_color = [100, 100, 100])
-    @center = center
-    @radius = radius
-    @surface_color = surface_color
-    @reflection = reflection
-    @transparency = transparency
-    @emission_color = emission_color
+  def initialize(options)
+    @center = options.fetch(:center)
+    @radius = options.fetch(:radius)
+    @surface_color = options.fetch(:surface_color)
+    @reflection = options.fetch(:reflection)
+    @transparency = options.fetch(:transparency)
+    @emission_color = options.fetch(:emission_color, [100, 100, 100])
   end
 
   attr_reader :center, :radius
@@ -120,6 +120,8 @@ class Ray
   def trace(spheres)
     tnear = INFINITY
     sphere = nil
+
+    # find intersecting sphere, if exists:
 
     spheres.each do |s|
       @t0 = INFINITY
@@ -190,9 +192,22 @@ def render(spheres)
 end
 
 def main
-  # TODO: refactor sphere to take params as hash
-  a = Sphere.new(Vec3.new(1.0, 0, -50), 2, [255, 255, 100], 1.0, 0.5)
-  b = Sphere.new(Vec3.new(3.0, 2, -20), 1, [255, 255, 100], 1.0, 0.5)
+  a = Sphere.new(
+    :center => Vec3.new(1.0, 0, -50),
+    :radius => 2,
+    :surface_color => [255, 255, 100],
+    :reflection => 1.0,
+    :transparency => 0.5
+  )
+
+  b = Sphere.new(
+    :center => Vec3.new(3.0, 2, -20),
+    :radius => 1,
+    :surface_color => [255, 255, 100],
+    :reflection => 1.0,
+    :transparency => 0.5
+  )
+
   render([a, b])
 end
 
