@@ -86,7 +86,7 @@ class Vec3
 end
 
 class Sphere
-  def initialize(center, radius, surface_color, reflection = 0, transparency = 0, emission_color = Vec3.new(0,0,0))
+  def initialize(center, radius, surface_color, reflection = 0, transparency = 0, emission_color = [100, 100, 100])
     @center = center
     @radius = radius
     @surface_color = surface_color
@@ -116,9 +116,9 @@ class Ray
     intersection = spheres.select {|s| s.intersect?(@origin.x, @origin.y)}
 
     if intersection.empty?
-      pixel = Vec3.new(0, 0, 0)
+      pixel = [0, 0, 0]
     else
-      pixel = Vec3.new(255, 255, 255)
+      pixel = [255, 255, 255]
     end
 
     pixel
@@ -138,7 +138,7 @@ def render(spheres)
     width.times do |x|
       ray = Ray.new(:origin => Vec3.new(x, y, -1), :direction => nil)
       pixel = ray.trace(spheres)
-      image.write_pixel(pixel.x, pixel.y, pixel.z)
+      image.write_pixel(*pixel)
     end
   end
 
@@ -167,8 +167,8 @@ def main
   test_image
 
   # TODO: refactor sphere to take params as hash
-  a = Sphere.new(Vec3.new(0, 0, 0), 50, Vec3.new(255, 255, 100), 1.0, 0.5)
-  b = Sphere.new(Vec3.new(100, 100, 0), 20, Vec3.new(255, 255, 100), 1.0, 0.5)
+  a = Sphere.new(Vec3.new(0, 0, 0), 50, [255, 255, 100], 1.0, 0.5)
+  b = Sphere.new(Vec3.new(100, 100, 0), 20, [255, 255, 100], 1.0, 0.5)
   render([a, b])
 end
 
