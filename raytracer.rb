@@ -145,27 +145,7 @@ def render(spheres)
   image.close
 end
 
-def test_image
-  image = Image.new('test.ppm', 255, 255)
-
-  0.upto(100) do |y|
-    0.upto(254) do |x|
-      image.write_pixel(255, 255, 0)
-    end
-  end
-
-  0.upto(154) do |y|
-    0.upto(254) do |x|
-      image.write_pixel(0, 255, 0)
-    end
-  end
-
-  image.close
-end
-
 def main
-  test_image
-
   # TODO: refactor sphere to take params as hash
   a = Sphere.new(Vec3.new(0, 0, 0), 50, [255, 255, 100], 1.0, 0.5)
   b = Sphere.new(Vec3.new(100, 100, 0), 20, [255, 255, 100], 1.0, 0.5)
