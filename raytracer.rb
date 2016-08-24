@@ -85,8 +85,72 @@ class Vec3
   end
 end
 
-def test_image
+class Sphere
+  def initialize(center, radius, surface_color, reflection = 0, transparency = 0, emission_color = Vec3.new(0,0,0))
+    @center = center
+    @radius = radius
+    @surface_color = surface_color
+    @reflection = reflection
+    @transparency = transparency
+    @emission_color = emission_color
+  end
+
+  # def intersect(ray, t0, t1)
+    
+  # end
+  
+  def intersect?(x, y)
+    distance = Math.sqrt((@center.x - x) ** 2 + (@center.y - y) ** 2)
+
+    distance <= @radius
+  end
+end
+
+
+
+class Ray
+  def initialize(origin, direction)
+    @origin = origin
+    @direction = direction
+  end
+
+  def trace(spheres, depth)
+
+  end
+end
+
+def render(spheres)
+  width = 255
+  height = 255
+  fov = 30
+  aspect_ratio = width.to_f / height
+  angle = Math.tan(Math::PI * 0.5 * fov / 180)
+
   image = Image.new('out.ppm', 255, 255)
+
+  height.times do |y|
+    width.times do |x|
+      intersection = spheres.select {|s| s.intersect?(x, y)}
+
+      if intersection.empty?
+        pixel = Vec3.new(0, 0, 0)
+      else
+        pixel = Vec3.new(255, 255, 255)
+      end
+
+      image.write_pixel(pixel.x, pixel.y, pixel.z)
+    end
+  end
+
+  image.close
+end
+
+def inverse(x)
+  1 / x.to_f
+end
+
+def test_image
+  image = Image.new('test.ppm', 255, 255)
 
   0.upto(100) do |y|
     0.upto(254) do |x|
@@ -105,6 +169,10 @@ end
 
 def main
   test_image
+
+  a = Sphere.new(Vec3.new(0, 0, 0), 50, Vec3.new(255, 255, 100), 1.0, 0.5)
+  b = Sphere.new(Vec3.new(100, 100, 0), 20, Vec3.new(255, 255, 100), 1.0, 0.5)
+  render([a, b])
 end
 
 main
