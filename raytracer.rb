@@ -103,10 +103,14 @@ class Sphere
     @surface_color = options.fetch(:surface_color)
     @reflection = options.fetch(:reflection)
     @transparency = options.fetch(:transparency)
-    @emission_color = options.fetch(:emission_color, [100, 100, 100])
+    @emission_color = options.fetch(:emission_color, nil)
   end
 
-  attr_reader :center, :radius
+  attr_reader :center, :radius, :surface_color, :reflection, :transparency, :emission_color
+
+  def light?
+    @emission_color.nil?
+  end
 end
 
 class Ray
@@ -137,11 +141,11 @@ class Ray
       end
     end
 
-    return [0, 0, 0] if sphere.nil?
+    return Vec3.new(0, 0, 0) if sphere.nil?
 
     # phit = @origin + @direction * tnear
 
-    [255, 255, 255]
+    Vec3.new(255, 255, 255)
   end
 
   private
@@ -184,7 +188,7 @@ def render(spheres)
       )
 
       pixel = ray.trace(spheres)
-      image.write_pixel(*pixel)
+      image.write_pixel(pixel.x.to_i, pixel.y.to_i, pixel.z.to_i)
     end
   end
 
@@ -195,7 +199,7 @@ def main
   a = Sphere.new(
     :center => Vec3.new(1.0, 0, -50),
     :radius => 2,
-    :surface_color => [255, 255, 100],
+    :surface_color => Vec3.new(255, 255, 100),
     :reflection => 1.0,
     :transparency => 0.5
   )
@@ -203,7 +207,7 @@ def main
   b = Sphere.new(
     :center => Vec3.new(3.0, 2, -20),
     :radius => 1,
-    :surface_color => [255, 255, 100],
+    :surface_color => Vec3.new(255, 255, 100),
     :reflection => 1.0,
     :transparency => 0.5
   )
