@@ -295,37 +295,37 @@ def render(spheres)
 end
 
 def main
-  a = Sphere.new(
-    :center => Vec3.new(1.0, 0, -20),
-    :radius => 2,
-    :surface_color => Vec3.new(0.90, 0.76, 0.46),
-    :reflection => 1,
-    :transparency => 1
-  )
-
-  b = Sphere.new(
-    :center => Vec3.new(-2.0, -1, -15),
-    :radius => 1,
-    :surface_color => Vec3.new(0.20, 0.16, 0.46),
-    :reflection => 1,
-    :transparency => 1
-  )
-
-  light = Sphere.new(
-    :center => Vec3.new(0, 2, -30),
-    :radius => 3,
-    :surface_color => Vec3.new(0, 0, 0),
-    :reflection => 0,
-    :transparency => 0,
-    :emission_color => Vec3.new(3, 3, 3)
-  )
-
   bg = Sphere.new(
-    :center => Vec3.new(0, -10000, -20),
+    :center => Vec3.new(0, -10002, -20),
     :radius => 10000,
     :surface_color => Vec3.new(0.2, 0.2, 0.2),
     :reflection => 0,
     :transparency => 0
+  )
+
+  a = Sphere.new(
+    :center => Vec3.new(0, 0, -20),
+    :radius => 2,
+    :surface_color => Vec3.new(1.00, 0.32, 0.36),
+    :reflection => 1,
+    :transparency => 0.5
+  )
+
+  b = Sphere.new(
+    :center => Vec3.new(4.0, -1.0, -15),
+    :radius => 2,
+    :surface_color => Vec3.new(0.90, 0.76, 0.46),
+    :reflection => 1,
+    :transparency => 0
+  )
+
+  light = Sphere.new(
+    :center => Vec3.new(0, 20, -30),
+    :radius => 20,
+    :surface_color => Vec3.new(0, 0, 0),
+    :reflection => 0,
+    :transparency => 0,
+    :emission_color => Vec3.new(3, 3, 3)
   )
 
   render([a, b, light])
