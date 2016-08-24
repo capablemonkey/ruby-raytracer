@@ -106,16 +106,22 @@ class Sphere
   end
 end
 
-
-
 class Ray
-  def initialize(origin, direction)
-    @origin = origin
-    @direction = direction
+  def initialize(params)
+    @origin = params.fetch(:origin)
+    @direction = params.fetch(:direction)
   end
 
-  def trace(spheres, depth)
+  def trace(spheres)
+    intersection = spheres.select {|s| s.intersect?(@origin.x, @origin.y)}
 
+    if intersection.empty?
+      pixel = Vec3.new(0, 0, 0)
+    else
+      pixel = Vec3.new(255, 255, 255)
+    end
+
+    pixel
   end
 end
 
@@ -130,23 +136,13 @@ def render(spheres)
 
   height.times do |y|
     width.times do |x|
-      intersection = spheres.select {|s| s.intersect?(x, y)}
-
-      if intersection.empty?
-        pixel = Vec3.new(0, 0, 0)
-      else
-        pixel = Vec3.new(255, 255, 255)
-      end
-
+      ray = Ray.new(:origin => Vec3.new(x, y, -1), :direction => nil)
+      pixel = ray.trace(spheres)
       image.write_pixel(pixel.x, pixel.y, pixel.z)
     end
   end
 
   image.close
-end
-
-def inverse(x)
-  1 / x.to_f
 end
 
 def test_image
@@ -170,6 +166,7 @@ end
 def main
   test_image
 
+  # TODO: refactor sphere to take params as hash
   a = Sphere.new(Vec3.new(0, 0, 0), 50, Vec3.new(255, 255, 100), 1.0, 0.5)
   b = Sphere.new(Vec3.new(100, 100, 0), 20, Vec3.new(255, 255, 100), 1.0, 0.5)
   render([a, b])
