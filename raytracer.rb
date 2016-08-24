@@ -1,3 +1,5 @@
+INFINITY = 1e8
+
 class Image
   def initialize(filename, width, height)
     @file = File.open(filename, 'w')
@@ -31,9 +33,9 @@ end
 
 class Vec3
   def initialize(x, y, z)
-    @x = x
-    @y = y
-    @z = z
+    @x = x.to_f
+    @y = y.to_f
+    @z = z.to_f
   end
 
   attr_reader :x, :y, :z
@@ -80,8 +82,17 @@ class Vec3
     Math.sqrt(length_squared)
   end
 
-  def inspect
+  def to_s
     "[#{@x}, #{@y}, #{@z}]"
+  end
+
+  def normalize
+    return copy unless length > 0
+    Vec3.new(@x / length, @y / length, @z / length)
+  end
+
+  def copy
+    Vec3.new(@x, @y, @z)
   end
 end
 
@@ -95,15 +106,7 @@ class Sphere
     @emission_color = emission_color
   end
 
-  # def intersect(ray, t0, t1)
-    
-  # end
-  
-  def intersect?(x, y)
-    distance = Math.sqrt((@center.x - x) ** 2 + (@center.y - y) ** 2)
-
-    distance <= @radius
-  end
+  attr_reader :center, :radius
 end
 
 class Ray
@@ -112,17 +115,51 @@ class Ray
     @direction = params.fetch(:direction)
   end
 
-  def trace(spheres)
-    intersection = spheres.select {|s| s.intersect?(@origin.x, @origin.y)}
+  attr_reader :origin, :direction
 
-    if intersection.empty?
-      pixel = [0, 0, 0]
-    else
-      pixel = [255, 255, 255]
+  def trace(spheres)
+    tnear = INFINITY
+    sphere = nil
+
+    spheres.each do |s|
+      @t0 = INFINITY
+      @t1 = INFINITY
+
+      if intersect_sphere?(s)
+        @t0 = @t1 if @t0 < 0
+
+        if @t0 < tnear
+          tnear = @t0
+          sphere = s
+        end
+      end
     end
 
-    pixel
+    return [0, 0, 0] if sphere.nil?
+
+    # phit = @origin + @direction * tnear
+
+    [255, 255, 255]
   end
+
+  private
+
+    def intersect_sphere?(sphere)
+      l = sphere.center - @origin
+      tca = l.dot_product(@direction)
+
+      return false if tca < 0
+
+      d2 = l.dot_product(l) - tca ** 2
+
+      return false if d2 > sphere.radius ** 2
+
+      thc = Math.sqrt(sphere.radius ** 2 - d2)
+      @t0 = tca - thc
+      @t1 = tca + thc
+
+      return true
+    end
 end
 
 def render(spheres)
@@ -136,7 +173,14 @@ def render(spheres)
 
   height.times do |y|
     width.times do |x|
-      ray = Ray.new(:origin => Vec3.new(x, y, -1), :direction => nil)
+      xx = (2 * ((x + 0.5) / width) - 1) * angle * aspect_ratio
+      yy = (1 - 2 * ((y + 0.5) / height)) * angle
+
+      ray = Ray.new(
+        :origin => Vec3.new(0, 0, 0),
+        :direction => Vec3.new(xx, yy, -1).normalize
+      )
+
       pixel = ray.trace(spheres)
       image.write_pixel(*pixel)
     end
@@ -147,8 +191,8 @@ end
 
 def main
   # TODO: refactor sphere to take params as hash
-  a = Sphere.new(Vec3.new(0, 0, 0), 50, [255, 255, 100], 1.0, 0.5)
-  b = Sphere.new(Vec3.new(100, 100, 0), 20, [255, 255, 100], 1.0, 0.5)
+  a = Sphere.new(Vec3.new(1.0, 0, -50), 2, [255, 255, 100], 1.0, 0.5)
+  b = Sphere.new(Vec3.new(3.0, 2, -20), 1, [255, 255, 100], 1.0, 0.5)
   render([a, b])
 end
 
