@@ -212,6 +212,7 @@ class Ray
         reflection * fresnel_effect +
         refraction * (1 - fresnel_effect) * sphere.transparency)
     else
+      # this is a diffuse object
       spheres.each do |s|
         if s.light?
           transmission = Vec3.new(1, 1, 1)
@@ -235,7 +236,7 @@ class Ray
             end
           end
 
-          surface_color += sphere.surface_color * transmission * [0, nhit.dot_product(light_direction)].max * sphere.emission_color
+          surface_color += sphere.surface_color * transmission * [0, nhit.dot_product(light_direction)].max * s.emission_color
         end
       end
     end
@@ -299,7 +300,7 @@ def main
     :center => Vec3.new(0, -10004, -20),
     :radius => 10000,
     :surface_color => Vec3.new(0.2, 0.2, 0.2),
-    :reflection => 0.1,
+    :reflection => 0,
     :transparency => 0
   )
 
