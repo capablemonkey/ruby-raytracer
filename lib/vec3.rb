@@ -28,20 +28,6 @@ class Vec3
     Vec3.new(@x - other.x, @y - other.y, @z - other.z)
   end
 
-  def increment_by(other)
-    @x += other.x
-    @y += other.y
-    @z += other.z
-    self
-  end
-
-  def decrement_by(other)
-    @x -= other.x
-    @y -= other.y
-    @z -= other.z
-    self
-  end
-
   def length_squared
     @x ** 2 + @y ** 2 + @z ** 2
   end
