@@ -42,7 +42,7 @@ class Ray
     end
 
     if (sphere.transparent? || sphere.reflective?) && (depth < MAX_RAY_DEPTH)
-      facing_ratio = @direction.dot_product(nhit) * -1 # TODO: possible order of ops issue with -raydir
+      facing_ratio = @direction.dot_product(nhit) * -1
       fresnel_effect = mix((1 - facing_ratio) ** 3, 1, 0.1)
 
       # compute reflection direction
@@ -62,7 +62,7 @@ class Ray
       if sphere.transparent?
         ior = 1.1
         eta = inside ? ior : (1 / ior)
-        cosi = nhit.dot_product(@direction) * -1 # TODO: possible order of ops issue with -nhit
+        cosi = nhit.dot_product(@direction) * -1
         k = 1 - eta * eta * (1 - cosi ** 2)
 
         refraction_direction = @direction * eta + nhit * (eta * cosi - Math.sqrt(k))
