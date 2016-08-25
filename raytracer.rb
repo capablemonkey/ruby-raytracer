@@ -6,31 +6,35 @@ require_relative 'lib/sphere.rb'
 require_relative 'lib/image.rb'
 require_relative 'lib/ray.rb'
 
-def render(spheres)
-  width = 320
-  height = 240
-  fov = 30
-  aspect_ratio = width.to_f / height
-  angle = Math.tan(Math::PI * 0.5 * fov / 180)
-
-  image = Image.new('out.ppm', width, height)
-
-  height.times do |y|
-    width.times do |x|
-      xx = (2 * ((x + 0.5) / width) - 1) * angle * aspect_ratio
-      yy = (1 - 2 * ((y + 0.5) / height)) * angle
-
-      ray = Ray.new(
-        :origin => Vec3.new(0, 0, 0),
-        :direction => Vec3.new(xx, yy, -1).normalize
-      )
-
-      pixel = ray.trace(spheres, 0)
-      image.write_pixel(*pixel.to_rgb)
-    end
+class Renderer
+  def initialize
+    @width = 320
+    @height = 240
+    @fov = 30
+    @aspect_ratio = @width.to_f / @height
+    @angle = Math.tan(Math::PI * 0.5 * @fov / 180)
   end
 
-  image.close
+  def render(spheres)
+    image = Image.new('out.ppm', @width, @height)
+
+    @height.times do |y|
+      @width.times do |x|
+        xx = (2 * ((x + 0.5) / @width) - 1) * @angle * @aspect_ratio
+        yy = (1 - 2 * ((y + 0.5) / @height)) * @angle
+
+        ray = Ray.new(
+          :origin => Vec3.new(0, 0, 0),
+          :direction => Vec3.new(xx, yy, -1).normalize
+        )
+
+        pixel = ray.trace(spheres, 0)
+        image.write_pixel(*pixel.to_rgb)
+      end
+    end
+
+    image.close
+  end
 end
 
 def main
@@ -83,7 +87,7 @@ def main
     :emission_color => Vec3.new(3, 3, 3)
   )
 
-  render([a, b, c, d, bg, light])
+  Renderer.new.render([a, b, c, d, bg, light])
 end
 
 main
