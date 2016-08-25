@@ -299,7 +299,7 @@ def main
     :center => Vec3.new(0, -10004, -20),
     :radius => 10000,
     :surface_color => Vec3.new(0.2, 0.2, 0.2),
-    :reflection => 0,
+    :reflection => 0.1,
     :transparency => 0
   )
 
