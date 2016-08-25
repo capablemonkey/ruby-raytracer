@@ -159,7 +159,7 @@ class Ray
       end
     end
 
-    return Vec3.new(0, 0, 0) if sphere.nil?
+    return Vec3.new(2, 2, 2) if sphere.nil?
 
     surface_color = Vec3.new(0, 0, 0)
     phit = @origin + @direction * tnear
@@ -195,7 +195,7 @@ class Ray
       if sphere.transparent?
         ior = 1.1
         eta = inside ? ior : (1 / ior)
-        cosi = nhit.dot_product(@direction) # TODO: possible order of ops issue with -nhit
+        cosi = nhit.dot_product(@direction) * -1 # TODO: possible order of ops issue with -nhit
         k = 1 - eta * eta * (1 - cosi ** 2)
 
         refraction_direction = @direction * eta + nhit * (eta * cosi - Math.sqrt(k))
@@ -268,8 +268,8 @@ class Ray
 end
 
 def render(spheres)
-  width = 640
-  height = 480
+  width = 320
+  height = 240
   fov = 30
   aspect_ratio = width.to_f / height
   angle = Math.tan(Math::PI * 0.5 * fov / 180)
@@ -344,7 +344,16 @@ def main
     :emission_color => Vec3.new(3, 3, 3)
   )
 
-  render([bg, a, b, c, d, light])
+  light2 = Sphere.new(
+    :center => Vec3.new(0, 0, 1),
+    :radius => 50,
+    :surface_color => Vec3.new(0, 0, 0),
+    :reflection => 0,
+    :transparency => 0,
+    :emission_color => Vec3.new(3, 3, 3)
+  )
+
+  render([a, b, c, d, bg, light])
 end
 
 main
