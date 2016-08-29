@@ -1,6 +1,3 @@
-INFINITY = 1e8
-MAX_RAY_DEPTH = 5
-
 require_relative 'lib/vec3.rb'
 require_relative 'lib/sphere.rb'
 require_relative 'lib/image.rb'
